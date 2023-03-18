@@ -1,0 +1,16 @@
+# virtual envs
+.venv/
+venv/
+
+# # Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# sample images
+sample_images/*.jpg
+sample_images/*.png
+
+# generated files
+output_music/*.wav
+output_music/*.html

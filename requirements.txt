@@ -1,0 +1,8 @@
+matplotlib
+numpy
+opencv-python
+scikit-learn
+pandas
+Pillow
+pyaudio
+scipy
