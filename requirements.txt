@@ -1,8 +1,9 @@
 matplotlib
+moviepy
 numpy
 opencv-python
 scikit-learn
 pandas
 Pillow
-pyaudio
 scipy
+tqdm==4.63.0
