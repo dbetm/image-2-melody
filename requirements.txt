@@ -4,6 +4,7 @@ numpy
 opencv-python
 scikit-learn
 pandas
+pedalboard
 Pillow
 scipy
 tqdm==4.63.0

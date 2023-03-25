@@ -1,18 +1,19 @@
 import os
 import random
-from typing import Tuple, Union
+from typing import Callable, Tuple, Union
 
 import cv2
 import numpy as np
 import pandas as pd
 from scipy.io import wavfile
+from scipy.signal import square
 from tqdm import tqdm
 
 from musical_scale_freqs import *
 from splitter import get_k_representatives
 
 
-BASE_OUTPUT_PATH = "../output_music/exp_0/"
+BASE_OUTPUT_PATH = "../output_music/exp_1/"
 IMAGES_PATH = "../sample_images/"
 EXPERIMENT_ID = 0
 # IMAGE PROCESSING
@@ -96,7 +97,7 @@ def get_rgb_average_values(
     return (avg_r, avg_g, avg_b)
 
 
-def build_playable_audio(df: pd.DataFrame) -> np.ndarray:
+def build_playable_audio(df: pd.DataFrame, gen_singal_fn: Callable) -> np.ndarray:
     frequencies = df["notes"].to_numpy()
     octaves = df["octave"].to_numpy()
 
@@ -108,13 +109,13 @@ def build_playable_audio(df: pd.DataFrame) -> np.ndarray:
 
     for octave, freq, in zip(octaves, frequencies):
         val = freq * octave
-        note  = 1 * np.sin(2*np.pi*val*t) # Represent each note as a sign wave
+        note  = 1 * gen_singal_fn(2*np.pi*val*t) # Represent each note as a sign wave
         song  = np.concatenate([song, note]) # Add notes into song array to make song
 
     return song
 
 
-def image_to_melody(image: np.ndarray, output_path: str) -> None:
+def image_to_melody(image: np.ndarray, output_path: str, gen_wave_fn: Callable) -> None:
     rgb_img = cv2.cvtColor(src=image, code=cv2.COLOR_BGR2RGB)
     hsv_img = cv2.cvtColor(src=image, code=cv2.COLOR_BGR2HSV)
 
@@ -161,7 +162,7 @@ def image_to_melody(image: np.ndarray, output_path: str) -> None:
     print(df_repixels.describe())
     print("-"*24)
 
-    audio = build_playable_audio(df_repixels)
+    audio = build_playable_audio(df_repixels, gen_wave_fn)
 
     # save audio 
     wavfile.write( 
@@ -174,9 +175,16 @@ def image_to_melody(image: np.ndarray, output_path: str) -> None:
 if __name__ == "__main__":
     images_filenames = os.listdir(path=IMAGES_PATH)
     images_filenames.sort()
-    images_filenames = ["009_turkey_nebula.jpg"]
+    # images_filenames = ["009_turkey_nebula.jpg"]
+
+    sin_fn = np.sin
+    square_fn = square
+
 
     for filename in tqdm(images_filenames):
+        if filename.startswith("."):
+            continue
+
         full_path = os.path.join(IMAGES_PATH, filename)
     
         if not os.path.isfile(full_path):
@@ -190,5 +198,6 @@ if __name__ == "__main__":
 
         image_to_melody(
             img,
-            output_path=os.path.join(BASE_OUTPUT_PATH, audio_filename)
+            output_path=os.path.join(BASE_OUTPUT_PATH, audio_filename),
+            gen_wave_fn=square_fn,
         )
