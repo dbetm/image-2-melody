@@ -6,7 +6,7 @@ import numpy as np
 
 
 DELTA_BRIGHT = 30
-BASE_OUTPUT_VIDEOS = "../output_videos/"
+BASE_OUTPUT_VIDEOS = "output_videos/"
 
 
 def highlight_pixel(channel_value: int, is_border: bool = False):
