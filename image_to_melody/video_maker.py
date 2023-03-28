@@ -56,7 +56,7 @@ def to_numeric(a: str):
     return int(a.split("/")[-1].split(".")[0])
 
 
-def create_video(base_images_dir: str, audio_path: str, output_path: str):
+def create_video(base_images_dir: str, audio_path: str, output_path: str) -> str:
     audio = mp.AudioFileClip(filename=audio_path)
     # we want an image for each second
     fps = 1
@@ -88,27 +88,28 @@ def create_video(base_images_dir: str, audio_path: str, output_path: str):
     video = mp.VideoFileClip(output_path)
     video = video.set_audio(audio.set_duration(video.duration))
     # it's important to use another filename to make sure the process finishes correctly
-    video.write_videofile(
-        output_path.replace(".mp4","_audio.mp4"), audio_codec="libmp3lame"
-    )
+    new_path = output_path.replace(".mp4","_audio.mp4")
+    video.write_videofile(new_path, audio_codec="libmp3lame")
+
+    return new_path
 
 
 if __name__ == '__main__':
-    filename = "004_aurora_boreal"
-    audio_path = f"../output_music/exp_0/{filename}.wav"
-    image_path = f"../sample_images/{filename}.jpg"
+    filename = "010_galaxy"
+    audio_path = f"output_music/exp_0/{filename}_effected.wav"
+    image_path = f"sample_images/{filename}.jpg"
     number_slices = 25
-    video_folder = image_path.split("/")[2].split(".")[0]
+    video_folder = image_path.split("/")[1].split(".")[0]
 
     fotograms_output_path = os.path.join(
         BASE_OUTPUT_VIDEOS, video_folder
     )
 
     if not os.path.isdir(fotograms_output_path):
-        os.mkdir(fotograms_output_path)
+        os.makedirs(fotograms_output_path)
 
     img = cv2.imread(filename=image_path)
-    color_img = cv2.cvtColor(src=img, code=cv2.COLOR_BGR2RGB)
+    # color_img = cv2.cvtColor(src=img, code=cv2.COLOR_BGR2RGB)
 
     generate_fotograms(
         output_path=fotograms_output_path,

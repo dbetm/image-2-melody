@@ -7,13 +7,16 @@ from tqdm import tqdm
 from scipy.io import wavfile
 
 from exp_hardcoding_frequencies import exp_0
+from image_to_melody import post_processor, video_maker as vid_mk
+
 
 BASE_OUTPUT_PATH = "output_music/exp_{experiment_id}/"
 IMAGES_PATH = "sample_images/"
+BASE_OUTPUT_VIDEOS = "output_videos/"
 SAMPLE_RATE = 44100 
 
 
-def run_exp_0():
+def run_exp_0(create_video: bool = False):
     """This experiment generate audio from the image, then the video composed with audio.
     The approach is hardcode frequencies of a selected musical scale using the HUE value of
     the image. The musical scale is selected with a simple heuristic using the average RGB 
@@ -21,44 +24,85 @@ def run_exp_0():
     """
     images_filenames = os.listdir(path=IMAGES_PATH)
     images_filenames.sort()
-    images_filenames = ["003_starry_night.jpg"]
+    images_filenames = ["002_pilares_de_la_creacion.png"]
 
-    for filename in tqdm(images_filenames):
-        if filename.startswith("."):
+    for img_filename in tqdm(images_filenames):
+        if img_filename.startswith("."):
             continue
 
-        full_path = os.path.join(IMAGES_PATH, filename)
+        img_full_path = os.path.join(IMAGES_PATH, img_filename)
     
-        if not os.path.isfile(full_path):
+        if not os.path.isfile(img_full_path):
             continue
 
-        print(filename)
+        print(img_filename)
 
-        img = cv2.imread(filename=full_path)
-        audio_filename = filename.split(".")[0]
+        img = cv2.imread(filename=img_full_path)
+        audio_filename = img_filename.split(".")[0]
         audio_filename += ".wav"
 
         audio = exp_0.image_to_melody(img)
 
-        base_output_path = BASE_OUTPUT_PATH.format(experiment_id=2)
+        base_output_path = BASE_OUTPUT_PATH.format(experiment_id=0)
         if not os.path.exists(base_output_path):
             os.makedirs(base_output_path)
 
-        output_path = os.path.join(base_output_path, audio_filename)
+        audio_output_path = os.path.join(base_output_path, audio_filename)
 
         # save audio 
         wavfile.write( 
-            output_path,
+            audio_output_path,
             rate=SAMPLE_RATE,
             data=audio.astype(np.float32)
         )
+
+        # improve audio
+        effected_audio_path = post_processor.improve_audio(
+            audio_path=audio_output_path
+        )
+
+        if create_video:
+            video_folder = os.path.join(
+                BASE_OUTPUT_VIDEOS, img_filename.split(".")[0]
+            )
+
+            if not os.path.isdir(video_folder):
+                os.makedirs(video_folder)
+            
+            vid_mk.generate_fotograms(
+                output_path=video_folder,
+                img=img,
+                n_slices=exp_0.NUMBER_SLICES,
+            )
+
+            tmp_video_path = os.path.join(video_folder, "final.mp4")
+
+            video_filepath = vid_mk.create_video(
+                base_images_dir=video_folder,
+                audio_path=effected_audio_path,
+                output_path=tmp_video_path,
+            )
+
+            # delete tmp video without audio
+            os.remove(tmp_video_path)
+
+            print(f"Video saved at: {video_filepath}")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--exp", type=int, required=False, default=0, help="Id of the experiment to run"
+        "--exp", type=int, required=False, help="Id of the experiment to run"
+    )
+    parser.add_argument(
+        "--video",
+        type=str,
+        required=False,
+        default="yes",
+        choices=["yes, no"],
+        help="Create video or not"
     )
     args = parser.parse_args()
+    create_video_flag = args.video == "yes"
 
-    eval(f"run_exp_{args.exp}()")
+    eval(f"run_exp_{args.exp}({create_video_flag})")

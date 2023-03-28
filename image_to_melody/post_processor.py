@@ -2,7 +2,7 @@ from pedalboard import Pedalboard, Compressor, HighpassFilter
 from pedalboard.io import AudioFile
 
 
-def improve_audio(audio_path: str):
+def improve_audio(audio_path: str) -> str:
     """Apply a highpass filter and a compressor effect to improve the sound."""
     # Make a Pedalboard object, containing multiple audio plugins:
     board = Pedalboard([
@@ -22,3 +22,11 @@ def improve_audio(audio_path: str):
 
                 # Write the output to our output file:
                 o.write(effected)
+
+    return new_path
+
+
+if __name__ == '__main__':
+    path_ = "output_music/exp_0/010_galaxy.wav"
+
+    improve_audio(path_)
