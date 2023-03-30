@@ -10,10 +10,10 @@ from exp_hardcoding_frequencies import exp_0
 from image_to_melody import post_processor, video_maker as vid_mk
 
 
-BASE_OUTPUT_PATH = "output_music/exp_{experiment_id}/"
 IMAGES_PATH = "sample_images/"
-BASE_OUTPUT_VIDEOS = "output_videos/"
+TEMPLATE_OUTPUT_PATH = "outputs/exp_{experiment_id}/{image_name}/"
 SAMPLE_RATE = 44100 
+IMAGE_FORMATS = {"png", "jpg", "jpeg"}
 
 
 def run_exp_0(create_video: bool = False):
@@ -22,31 +22,33 @@ def run_exp_0(create_video: bool = False):
     the image. The musical scale is selected with a simple heuristic using the average RGB 
     values of the image from a sample.
     """
+    EXPERIMENT_ID = 0
     images_filenames = os.listdir(path=IMAGES_PATH)
     images_filenames.sort()
-    images_filenames = ["002_pilares_de_la_creacion.png"]
+    # images_filenames = ["002_pilares_de_la_creacion.png"]
 
     for img_filename in tqdm(images_filenames):
-        if img_filename.startswith("."):
-            continue
+        img_name, file_extension = img_filename.split(".")
 
-        img_full_path = os.path.join(IMAGES_PATH, img_filename)
-    
-        if not os.path.isfile(img_full_path):
+        if file_extension not in IMAGE_FORMATS:
             continue
 
         print(img_filename)
 
+        base_output_path = TEMPLATE_OUTPUT_PATH.format(
+            experiment_id=EXPERIMENT_ID,
+            image_name=img_name
+        )
+
+        if not os.path.exists(base_output_path):
+            os.makedirs(base_output_path)
+
+        img_full_path = os.path.join(IMAGES_PATH, img_filename)
         img = cv2.imread(filename=img_full_path)
         audio_filename = img_filename.split(".")[0]
         audio_filename += ".wav"
 
         audio = exp_0.image_to_melody(img)
-
-        base_output_path = BASE_OUTPUT_PATH.format(experiment_id=0)
-        if not os.path.exists(base_output_path):
-            os.makedirs(base_output_path)
-
         audio_output_path = os.path.join(base_output_path, audio_filename)
 
         # save audio 
@@ -63,7 +65,7 @@ def run_exp_0(create_video: bool = False):
 
         if create_video:
             video_folder = os.path.join(
-                BASE_OUTPUT_VIDEOS, img_filename.split(".")[0]
+                base_output_path, "frames/"
             )
 
             if not os.path.isdir(video_folder):
@@ -75,7 +77,7 @@ def run_exp_0(create_video: bool = False):
                 n_slices=exp_0.NUMBER_SLICES,
             )
 
-            tmp_video_path = os.path.join(video_folder, "final.mp4")
+            tmp_video_path = os.path.join(base_output_path, "final.mp4")
 
             video_filepath = vid_mk.create_video(
                 base_images_dir=video_folder,

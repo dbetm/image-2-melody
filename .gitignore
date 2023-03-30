@@ -7,13 +7,12 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# sample images
-sample_images/experimental/
 
 # generated files
-output_music/**/*.wav
-output_videos/**/*.mp4
-output_videos/**/*.png
 sample_images/**/*.jpeg
 sample_images/**/*.jpg
 sample_images/**/*.png
+
+outputs/**/*.wav
+outputs/**/*.mp4
+outputs/**/*.png
