@@ -1,10 +1,13 @@
+"""In this experiment the frequency will be selected from groups of frequencies which
+are known as musical scales. The HSV values are extracted from the image.
+"""
 from typing import Callable, Union
 
 import cv2
 import numpy as np
 import pandas as pd
 
-from image_to_melody.musical_scale_freqs import *
+from image_to_melody.audio_processor import *
 from image_to_melody.img_utils import (
     get_representative_pixels,
     get_rgb_average_values,
@@ -37,24 +40,6 @@ def map_value_to_dest(
             break
 
     return dest_value
-
-
-def build_playable_audio(df: pd.DataFrame, gen_singal_fn: Callable) -> np.ndarray:
-    frequencies = df["notes"].to_numpy()
-    octaves = df["octave"].to_numpy()
-
-    # t represents an array of int(T*sample_rate) time values starting from 0 
-    # and ending at T, with a fixed duration between each sample
-    t = np.linspace(0, T, int(T*SAMPLE_RATE), endpoint=False)
-
-    song = np.array([])
-
-    for octave, freq, in zip(octaves, frequencies):
-        val = freq * octave
-        note  = 1 * gen_singal_fn(2*np.pi*val*t) # Represent each note as a sign wave
-        song  = np.concatenate([song, note]) # Add notes into song array to make song
-
-    return song
 
 
 def image_to_melody(
@@ -106,9 +91,12 @@ def image_to_melody(
     print(df_repixels.describe())
     print("-"*24)
 
-    audio = build_playable_audio(df_repixels, gen_wave_fn)
-
-    return audio
+    return build_playable_audio(
+        df_repixels,
+        gen_wave_fn,
+        sample_rate=SAMPLE_RATE,
+        time=T,
+    )
 
 
 if __name__ == "__main__":
