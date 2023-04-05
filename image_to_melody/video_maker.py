@@ -11,7 +11,7 @@ BASE_OUTPUT_VIDEOS = "output_videos/"
 
 def highlight_pixel(channel_value: int, is_border: bool = False):
     if is_border:
-        return 0
+        return 3 # 0 is completely black
 
     return min(255, channel_value + DELTA_BRIGHT)
 
