@@ -6,6 +6,7 @@ from typing import Callable, Union
 import cv2
 import numpy as np
 import pandas as pd
+from pedalboard import Compressor, HighpassFilter
 
 from image_to_melody.audio_processor import *
 from image_to_melody.img_utils import (
@@ -14,13 +15,19 @@ from image_to_melody.img_utils import (
 )
 
 
-EXPERIMENT_ID = 0
-# IMAGE PROCESSING
-NUMBER_SLICES = 25
-K = 5 # number of representative colors by slice
-# MELODY GENERATION
-SAMPLE_RATE = 44100 # 44.1 KHz - standard used in most CDs and digital audio formats
-T = 0.2 # second duration
+class Conf:
+    # GENERAL
+    EXPERIMENT_ID = 0
+    # IMAGE PROCESSING
+    NUMBER_SLICES = 25
+    K = 5 # number of representative colors by slice
+    # MELODY GENERATION
+    SAMPLE_RATE = 44100 # 44.1 KHz - standard used in most CDs and digital audio formats
+    T = 0.2 # second duration
+    SOUND_EFFECTS = [
+        HighpassFilter(),
+        Compressor(threshold_db=0, ratio=25),
+    ]
 
 
 def map_value_to_dest(
@@ -49,7 +56,9 @@ def image_to_melody(
     hsv_img = cv2.cvtColor(src=image, code=cv2.COLOR_BGR2HSV)
 
     # height, width, channels = hsv_img.shape
-    all_representative_pixels = get_representative_pixels(hsv_img, NUMBER_SLICES, K)
+    all_representative_pixels = get_representative_pixels(
+        hsv_img, Conf.NUMBER_SLICES, Conf.K
+    )
 
     df_repixels = pd.DataFrame(
         all_representative_pixels, columns=["hue", "saturation", "value"]
@@ -94,10 +103,6 @@ def image_to_melody(
     return build_playable_audio(
         df_repixels,
         gen_wave_fn,
-        sample_rate=SAMPLE_RATE,
-        time=T,
+        sample_rate=Conf.SAMPLE_RATE,
+        time=Conf.T,
     )
-
-
-if __name__ == "__main__":
-    pass
