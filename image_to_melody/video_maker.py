@@ -95,14 +95,14 @@ def create_video(base_images_dir: str, audio_path: str, output_path: str) -> str
 
 
 if __name__ == '__main__':
-    filename = "010_galaxy"
-    audio_path = f"output_music/exp_0/{filename}_effected.wav"
+    filename = "003_starry_night"
+    audio_path = f"outputs/exp_2/first_example.mp3"
     image_path = f"sample_images/{filename}.jpg"
-    number_slices = 25
+    number_slices = 30
     video_folder = image_path.split("/")[1].split(".")[0]
 
     fotograms_output_path = os.path.join(
-        BASE_OUTPUT_VIDEOS, video_folder
+        "outputs/exp_2", "yupi"
     )
 
     if not os.path.isdir(fotograms_output_path):

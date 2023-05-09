@@ -7,7 +7,6 @@ import cv2
 import numpy as np
 from scipy.io import wavfile
 
-# from exp_hardcoding_frequencies import exp_0, exp_1
 from image_to_melody import audio_processor, video_maker as vid_mk
 
 
