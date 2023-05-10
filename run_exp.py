@@ -50,7 +50,7 @@ def create_and_save_video(
 
 def load_module(id: int) -> ModuleType:
     return importlib.import_module(
-        name=f"exp_hardcoding_frequencies.exp_{id}"
+        name=f"experiments.exp_{id}.exp_{id}"
     )
 
 
@@ -58,7 +58,7 @@ def run_exp(exp: ModuleType, create_video: bool = False):
     """This function runs a pipeline for the given experiment."""
     images_filenames = os.listdir(path=IMAGES_PATH)
     images_filenames.sort()
-    images_filenames = ["005_mona_lisa.jpg"]
+    images_filenames = ["008_atardecer.jpg"]
 
     for img_filename in images_filenames:
         img_name, file_extension = img_filename.split(".")
@@ -115,16 +115,14 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--video",
-        type=str,
-        required=False,
-        default="yes",
-        choices=["yes, no"],
-        help="Create video or not"
+        action="store_true",
+        help="Create a video or not"
     )
     args = parser.parse_args()
-    create_video_flag = args.video == "yes"
     
     exp = load_module(args.exp)
 
     print(f"Executing exp_{args.exp}")
-    run_exp(exp=exp, create_video=create_video_flag)
+    print(exp.__doc__)
+
+    run_exp(exp=exp, create_video=args.video)
