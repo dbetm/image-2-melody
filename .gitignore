@@ -16,3 +16,6 @@ sample_images/**/*.png
 outputs/**/*.wav
 outputs/**/*.mp4
 outputs/**/*.png
+
+# SoundFont file, necessary to synthesize MIDI files
+experiments/**/*.sf2
