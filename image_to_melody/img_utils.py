@@ -6,12 +6,13 @@ from sklearn.cluster import KMeans
 
 
 def get_pixel_average_values(
-    img: np.ndarray, sample_percent: float = 0.15
+    img: np.ndarray, sample_percent: float = 0.15, seed: int = 42
 ) -> Tuple[int, int, int]:
     """Sample the image using a uniform probability distribution and then
     compute the average for each channel, the image must have tree channels (example
     RGB and HSV). The order is keept."""
     height, width, _ = img.shape
+    random.seed(seed)
 
     total_pixels = int((width * height) * sample_percent)
     first_ch_acc, second_ch_acc, third_ch_acc = 0, 0, 0
@@ -30,6 +31,35 @@ def get_pixel_average_values(
     avg_third = third_ch_acc // total_pixels
 
     return (avg_first, avg_second, avg_third)
+
+
+def get_pixel_median_values(
+    img: np.ndarray, sample_percent: float = 0.15, seed: int = 42
+) -> Tuple[int, int, int]:
+    """Randomly sample the pixels in the image using a uniform probability distribution. 
+    Compute the median value for each channel in the sampled pixels. The image must 
+    have three channels, such as RGB or HSV, and the order of channels must be maintained.
+    """
+    height, width, _ = img.shape
+    random.seed(seed)
+
+    total_pixels = int((width * height) * sample_percent)
+    first_channel, second_channel, third_channel = list(), list(), list()
+
+    for _ in range(total_pixels):
+        x = random.randint(0, width - 1)
+        y = random.randint(0, height - 1)
+        pix = img[y][x]
+
+        first_channel.append(pix[0])
+        second_channel.append(pix[1])
+        third_channel.append(pix[2])
+
+    median_first = np.median(np.array(first_channel))
+    median_second = np.median(np.array(second_channel))
+    median_third = np.median(np.array(third_channel))
+
+    return (median_first, median_second, median_third)
 
 
 def get_k_representatives(pixels: np.array, k: int = 5) -> list:

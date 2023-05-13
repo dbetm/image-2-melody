@@ -9,7 +9,7 @@ from mido import Message, MidiFile, MidiTrack, MetaMessage
 from experiments.exp_2.instrument_groups import *
 from image_to_melody.connections import download_sound_font
 from image_to_melody.img_utils import (
-    get_pixel_average_values, get_representative_pixels
+    get_pixel_average_values, get_pixel_median_values, get_representative_pixels
 )
 
 
@@ -81,19 +81,23 @@ class Track(MidiTrack):
 
 
 def select_instrument_group(image: np.ndarray) -> dict:
-    hue_avg, _, _, = get_pixel_average_values(image)
+    hue_median, _, _ = get_pixel_median_values(image)
 
-    if hue_avg < 25.0:
+    print(">> hue median", hue_median)
+
+    if hue_median < 30.0:
         return RED_GROUP
-    elif hue_avg < 37.0:
+    elif hue_median >= 30.0 and hue_median < 60.0:
         return YELLOW_GROUP
-    elif hue_avg < 78.0:
+    elif hue_median >= 60.0 and hue_median < 94.0:
         return GREEN_GROUP
-    elif hue_avg < 106.0:
+    elif hue_median >= 94.0 and hue_median < 100.0:
+        return BLUE_2_GROUP
+    elif hue_median >= 100.0 and hue_median < 142.0:
         return BLUE_GROUP
-    elif hue_avg < 139.0:
+    elif hue_median >= 142.0 and hue_median < 155.0:
         return PURPLE_GROUP
-    elif hue_avg < 158.0:
+    elif hue_median >= 155.0 and hue_median < 165.0:
         return PINK_GROUP
 
     return RED_2_GROUP
