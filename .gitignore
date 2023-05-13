@@ -12,6 +12,9 @@ __pycache__/
 sample_images/**/*.jpeg
 sample_images/**/*.jpg
 sample_images/**/*.png
+experiments/**/*.wav
+experiments/**/*.mp3
+experiments/**/*.mid
 
 outputs/**/*.wav
 outputs/**/*.mp4

@@ -56,7 +56,11 @@ def to_numeric(a: str):
     return int(a.split("/")[-1].split(".")[0])
 
 
-def create_video(base_images_dir: str, audio_path: str, output_path: str) -> str:
+def create_video(
+    base_images_dir: str, audio_path: str, output_path: str, rate_img_repetition: int = 1
+) -> str:
+    """rate_img_repeat, indicates how many times a single image will be repeated and then
+    added as a single frame."""
     audio = mp.AudioFileClip(filename=audio_path)
     # we want an image for each second
     fps = 1
@@ -79,7 +83,8 @@ def create_video(base_images_dir: str, audio_path: str, output_path: str) -> str
     # Loop through the image files and add them to the video writer
     for image_file in img_files:
         img = cv2.imread(image_file)
-        video_writer.write(img)
+        for _ in range(rate_img_repetition):
+            video_writer.write(img)
 
     # Release the video writer
     video_writer.release()
