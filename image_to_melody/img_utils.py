@@ -5,30 +5,31 @@ import numpy as np
 from sklearn.cluster import KMeans
 
 
-def get_rgb_average_values(
-    rgb_img: np.ndarray, sample_percent: float = 0.15
+def get_pixel_average_values(
+    img: np.ndarray, sample_percent: float = 0.15
 ) -> Tuple[int, int, int]:
     """Sample the image using a uniform probability distribution and then
-    compute the average for each channel (RGB)."""
-    height, width, _ = rgb_img.shape
+    compute the average for each channel, the image must have tree channels (example
+    RGB and HSV). The order is keept."""
+    height, width, _ = img.shape
 
     total_pixels = int((width * height) * sample_percent)
-    r_acc, g_acc, b_acc = 0, 0, 0
+    first_ch_acc, second_ch_acc, third_ch_acc = 0, 0, 0
 
     for _ in range(total_pixels):
         x = random.randint(0, width - 1)
         y = random.randint(0, height - 1)
-        pix = rgb_img[y][x]
+        pix = img[y][x]
 
-        r_acc += pix[0]
-        g_acc += pix[1]
-        b_acc += pix[2]
+        first_ch_acc += pix[0]
+        second_ch_acc += pix[1]
+        third_ch_acc += pix[2]
 
-    avg_r = r_acc // total_pixels
-    avg_g = g_acc // total_pixels
-    avg_b = b_acc // total_pixels
+    avg_first = first_ch_acc // total_pixels
+    avg_second = second_ch_acc // total_pixels
+    avg_third = third_ch_acc // total_pixels
 
-    return (avg_r, avg_g, avg_b)
+    return (avg_first, avg_second, avg_third)
 
 
 def get_k_representatives(pixels: np.array, k: int = 5) -> list:

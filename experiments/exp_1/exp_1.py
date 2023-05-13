@@ -30,6 +30,8 @@ class Conf:
         Delay(delay_seconds=0.1),
         Reverb(room_size=0.5),
     ]
+    # VIDEO GENERATION
+    RATE_IMG_REPETITION = 2
 
 
 def rgb_to_octave(avg_rgb: int, octave_values: list) -> float:

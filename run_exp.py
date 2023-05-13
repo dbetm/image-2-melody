@@ -1,6 +1,7 @@
 import argparse
 import importlib
 import os
+import shutil
 from types import ModuleType
 
 import cv2
@@ -17,7 +18,11 @@ IMAGE_FORMATS = {"png", "jpg", "jpeg"}
 
 
 def create_and_save_video(
-    img: np.ndarray, base_output_path: str, audio_path: str, n_slices: int
+    img: np.ndarray,
+    base_output_path: str,
+    audio_path: str,
+    n_slices: int,
+    num_repetitions: int,
 ) -> None:
     """Create dir to save the video, generate frames and then save the video with
     audio in the `base_output_path` given."""
@@ -40,6 +45,7 @@ def create_and_save_video(
         base_images_dir=video_folder,
         audio_path=audio_path,
         output_path=tmp_video_path,
+        rate_img_repetition=num_repetitions,
     )
 
     # delete tmp video without audio
@@ -58,7 +64,7 @@ def run_exp(exp: ModuleType, create_video: bool = False):
     """This function runs a pipeline for the given experiment."""
     images_filenames = os.listdir(path=IMAGES_PATH)
     images_filenames.sort()
-    images_filenames = ["008_atardecer.jpg"]
+    # images_filenames = ["006_fractal.jpg"]
 
     for img_filename in images_filenames:
         img_name, file_extension = img_filename.split(".")
@@ -66,7 +72,7 @@ def run_exp(exp: ModuleType, create_video: bool = False):
         if file_extension not in IMAGE_FORMATS:
             continue
 
-        print(img_filename)
+        print(">>", img_filename)
 
         base_output_path = TEMPLATE_OUTPUT_PATH.format(
             experiment_id=exp.Conf.EXPERIMENT_ID,
@@ -84,12 +90,15 @@ def run_exp(exp: ModuleType, create_video: bool = False):
         audio = exp.image_to_melody(img)
         audio_output_path = os.path.join(base_output_path, audio_filename)
 
-        # save audio 
-        wavfile.write( 
-            audio_output_path,
-            rate=SAMPLE_RATE,
-            data=audio.astype(np.float32)
-        )
+        if isinstance(audio, np.ndarray):
+            # save audio 
+            wavfile.write( 
+                audio_output_path,
+                rate=SAMPLE_RATE,
+                data=audio.astype(np.float32)
+            )
+        else: # audio is the path of the saved file
+            shutil.copyfile(src=audio, dst=audio_output_path)
 
         # improve audio
         effected_audio_path = audio_processor.improve_audio(
@@ -103,6 +112,7 @@ def run_exp(exp: ModuleType, create_video: bool = False):
                 base_output_path=base_output_path,
                 audio_path=effected_audio_path,
                 n_slices=exp.Conf.NUMBER_SLICES,
+                num_repetitions=exp.Conf.RATE_IMG_REPETITION,
             )
 
         print("-"*42)
@@ -111,7 +121,7 @@ def run_exp(exp: ModuleType, create_video: bool = False):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--exp", type=int, required=False, help="Id of the experiment to run"
+        "--exp", type=int, required=True, help="Id of the experiment to run"
     )
     parser.add_argument(
         "--video",

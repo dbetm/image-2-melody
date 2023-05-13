@@ -13,6 +13,27 @@ A_MAJOR =          [220.00, 246.94, 277.18, 293.66, 329.63, 370.00, 415.30]
 A_HARMONIC_MAJOR = [220.00, 246.94, 261.63, 293.66, 329.63, 366.67, 440.00]
 
 
+# CHORDS - MIDI FREQUENCIES
+class MidiChords:
+    # Major Chords
+    A_MAJOR = [57, 61, 64] # A, C#, E
+    B_MAJOR = [59, 63, 66] # B, D#, F#
+    C_MAJOR = [60, 64, 67] # C, E, G 
+    E_MAJOR = [64, 68, 71] # E, G#, B
+    G_MAJOR = [55, 59, 62] # G, B, D
+    F_MAJOR = [65, 69, 72] # F, A, C 
+    # Minor Chords
+    A_MINOR = [57, 60, 64] # A, C, E
+    B_MINOR = [59, 62, 66] # B, D, F
+    D_MINOR = [62, 65, 69] # D, F, A
+    E_MINOR = [64, 67, 71] # E, G, B
+    F_MINOR = [65, 58, 72] # F, #G, C
+    # Root notes
+    C_MAJOR_ROOT = [48]  # C
+    F_MAJOR_ROOT = [53]  # F
+    G_MAJOR_ROOT = [55]  # G
+
+
 def build_playable_audio(
     df: pd.DataFrame,
     gen_singal_fn: Callable,
@@ -42,6 +63,9 @@ def build_playable_audio(
 
 def improve_audio(audio_path: str, effects: List[Any]) -> str:
     """Apply a highpass filter and a compressor effect to improve the sound."""
+    if len(effects) == 0:
+        return audio_path
+
     # Make a Pedalboard object, containing multiple audio plugins:
     board = Pedalboard(plugins=[effect for effect in effects])
 
@@ -59,3 +83,11 @@ def improve_audio(audio_path: str, effects: List[Any]) -> str:
                 o.write(effected)
 
     return new_path
+
+
+def group_notes(notes: list) -> list:
+    """Grant that notes are unique, then sort them in ascending order."""
+    notes = list(set(notes))
+    notes.sort()
+
+    return notes

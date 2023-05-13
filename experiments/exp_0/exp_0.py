@@ -11,7 +11,7 @@ from pedalboard import Compressor, HighpassFilter
 from image_to_melody.audio_processor import *
 from image_to_melody.img_utils import (
     get_representative_pixels,
-    get_rgb_average_values,
+    get_pixel_average_values,
 )
 
 
@@ -28,6 +28,8 @@ class Conf:
         HighpassFilter(),
         Compressor(threshold_db=0, ratio=25),
     ]
+    # VIDEO GENERATION
+    RATE_IMG_REPETITION = 2
 
 
 def map_value_to_dest(
@@ -66,7 +68,7 @@ def image_to_melody(
 
     print(f"Number of representative pixels: {df_repixels.shape[0]}")
 
-    avg_r, avg_g, avg_b = get_rgb_average_values(rgb_img)
+    avg_r, avg_g, avg_b = get_pixel_average_values(rgb_img)
 
     # select musical scale
     scale_freq = []
