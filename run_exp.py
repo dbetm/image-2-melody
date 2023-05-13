@@ -64,7 +64,7 @@ def run_exp(exp: ModuleType, create_video: bool = False):
     """This function runs a pipeline for the given experiment."""
     images_filenames = os.listdir(path=IMAGES_PATH)
     images_filenames.sort()
-    # images_filenames = ["006_fractal.jpg"]
+    images_filenames = ["003_starry_night.jpg"]
 
     for img_filename in images_filenames:
         img_name, file_extension = img_filename.split(".")

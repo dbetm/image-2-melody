@@ -75,6 +75,19 @@ GREEN_GROUP = {
 }
 
 
+BLUE_2_GROUP = {
+    "description": (
+        "Drum, bass, whistle, and brass, which are mapped to clear blue tones and thus to"
+        " energy and vitality."
+    ),
+    "instruments": [
+        Instrument("drum", 117, Chords.A_MINOR, volume=84, color_channel="blue",),
+        Instrument("whistle", 78, Chords.A_MINOR, "green"),
+        Instrument("brass", 61, Chords.C_MAJOR, "red"),
+    ]
+}
+
+
 BLUE_GROUP = {
     "description": (
         "Violin, clarinet, and piano, which are mapped to blue tones and thus to"
