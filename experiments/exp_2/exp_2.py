@@ -9,7 +9,7 @@ from mido import Message, MidiFile, MidiTrack, MetaMessage
 from experiments.exp_2.instrument_groups import *
 from image_to_melody.connections import download_sound_font
 from image_to_melody.img_utils import (
-    get_pixel_average_values, get_pixel_median_values, get_representative_pixels
+    get_pixel_median_values, get_representative_pixels
 )
 
 

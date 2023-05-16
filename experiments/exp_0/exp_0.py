@@ -29,7 +29,7 @@ class Conf:
         Compressor(threshold_db=0, ratio=25),
     ]
     # VIDEO GENERATION
-    RATE_IMG_REPETITION = 2
+    RATE_IMG_REPETITION = 1
 
 
 def map_value_to_dest(
