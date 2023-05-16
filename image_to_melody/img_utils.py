@@ -1,6 +1,7 @@
 import random
 from typing import Tuple
 
+import cv2
 import numpy as np
 from sklearn.cluster import KMeans
 
@@ -106,3 +107,23 @@ def get_representative_pixels(
             all_representative_pixels.append(representative)
 
     return all_representative_pixels
+
+
+def resize_image(img: np.ndarray, threshold_dim: int) -> np.ndarray:
+    """Resize the image, keeping ratio between dimensions, if the larger
+    dimension is above the threshold, otherwise the image is not resized."""
+    height, width, _ = img.shape
+
+    if height >= width and height > threshold_dim:
+        factor = threshold_dim / float(height)
+        new_width = int(factor * width)
+
+        return cv2.resize(img, (new_width, threshold_dim))
+    elif width > height and width > threshold_dim:
+        factor = threshold_dim / float(width)
+        new_height = int(factor * height)
+
+        return cv2.resize(img, (threshold_dim, new_height))
+
+    return img
+

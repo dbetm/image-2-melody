@@ -31,7 +31,7 @@ class Conf:
         Reverb(room_size=0.5),
     ]
     # VIDEO GENERATION
-    RATE_IMG_REPETITION = 2
+    RATE_IMG_REPETITION = 1
 
 
 def rgb_to_octave(avg_rgb: int, octave_values: list) -> float:

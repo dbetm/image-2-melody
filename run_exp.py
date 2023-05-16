@@ -9,12 +9,14 @@ import numpy as np
 from scipy.io import wavfile
 
 from image_to_melody import audio_processor, video_maker as vid_mk
+from image_to_melody.img_utils import resize_image
 
 
 IMAGES_PATH = "sample_images/"
 TEMPLATE_OUTPUT_PATH = "outputs/exp_{experiment_id}/{image_name}/"
 SAMPLE_RATE = 44100 
 IMAGE_FORMATS = {"png", "jpg", "jpeg"}
+THRESHOLD_IMAGE_DIM = 1280
 
 
 def create_and_save_video(
@@ -64,7 +66,7 @@ def run_exp(exp: ModuleType, create_video: bool = False):
     """This function runs a pipeline for the given experiment."""
     images_filenames = os.listdir(path=IMAGES_PATH)
     images_filenames.sort()
-    images_filenames = ["003_starry_night.jpg"]
+    images_filenames = ["001_hubble_deep_space.jpg"]
 
     for img_filename in images_filenames:
         img_name, file_extension = img_filename.split(".")
@@ -84,10 +86,12 @@ def run_exp(exp: ModuleType, create_video: bool = False):
 
         img_full_path = os.path.join(IMAGES_PATH, img_filename)
         img = cv2.imread(filename=img_full_path)
+        resized_img = resize_image(img, THRESHOLD_IMAGE_DIM)
+
         audio_filename = img_filename.split(".")[0]
         audio_filename += ".wav"
 
-        audio = exp.image_to_melody(img)
+        audio = exp.image_to_melody(resized_img)
         audio_output_path = os.path.join(base_output_path, audio_filename)
 
         if isinstance(audio, np.ndarray):
@@ -108,7 +112,7 @@ def run_exp(exp: ModuleType, create_video: bool = False):
 
         if create_video:
             create_and_save_video(
-                img=img,
+                img=resized_img,
                 base_output_path=base_output_path,
                 audio_path=effected_audio_path,
                 n_slices=exp.Conf.NUMBER_SLICES,
