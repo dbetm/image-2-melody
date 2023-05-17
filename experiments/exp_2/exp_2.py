@@ -29,6 +29,7 @@ class Conf:
     SOUND_FONT_FILEPATH = "experiments/tmp/sound_font.sf2"
     # VIDEO GENERATION
     RATE_IMG_REPETITION = 2
+    FPS = 3
 
 
 class Track(MidiTrack):
@@ -162,11 +163,3 @@ def image_to_melody(image: np.ndarray):
     )
 
     return Conf.TEMP_AUDIO_FILEPATH
-
-"""
-Refs 
-
-https://chat.openai.com/c/aa567588-d6e4-4999-ad5b-f04fa924413f - Emotions mapping
-
-https://chat.openai.com/c/d3a31258-d452-4e15-8b89-31684d973574 - MIDI numbers and instruments
-"""

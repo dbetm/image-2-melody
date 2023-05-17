@@ -30,6 +30,7 @@ class Conf:
     ]
     # VIDEO GENERATION
     RATE_IMG_REPETITION = 1
+    FPS = 1
 
 
 def map_value_to_dest(
