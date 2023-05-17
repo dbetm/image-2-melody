@@ -19,6 +19,7 @@ experiments/**/*.mid
 outputs/**/*.wav
 outputs/**/*.mp4
 outputs/**/*.png
+tests/tmp/outputs/*
 
 # SoundFont file, necessary to synthesize MIDI files
 experiments/**/*.sf2

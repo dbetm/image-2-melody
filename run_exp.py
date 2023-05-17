@@ -25,29 +25,20 @@ def create_and_save_video(
     audio_path: str,
     n_slices: int,
     num_repetitions: int,
+    fps: int,
 ) -> None:
     """Create dir to save the video, generate frames and then save the video with
     audio in the `base_output_path` given."""
-    video_folder = os.path.join(
-        base_output_path, "frames/"
-    )
-
-    if not os.path.isdir(video_folder):
-        os.makedirs(video_folder)
-    
-    vid_mk.generate_fotograms(
-        output_path=video_folder,
-        img=img,
-        n_slices=n_slices,
-    )
-
     tmp_video_path = os.path.join(base_output_path, "final.mp4")
+    assert fps > 0
 
     video_filepath = vid_mk.create_video(
-        base_images_dir=video_folder,
+        img=img,
+        n_slices=n_slices,
         audio_path=audio_path,
         output_path=tmp_video_path,
         rate_img_repetition=num_repetitions,
+        fps=fps,
     )
 
     # delete tmp video without audio
@@ -62,11 +53,11 @@ def load_module(id: int) -> ModuleType:
     )
 
 
-def run_exp(exp: ModuleType, create_video: bool = False):
+def run_exp(exp: ModuleType, create_video: bool = False, fps: int = None):
     """This function runs a pipeline for the given experiment."""
     images_filenames = os.listdir(path=IMAGES_PATH)
     images_filenames.sort()
-    images_filenames = ["001_hubble_deep_space.jpg"]
+    images_filenames = ["004_aurora_boreal.jpg"]
 
     for img_filename in images_filenames:
         img_name, file_extension = img_filename.split(".")
@@ -117,6 +108,7 @@ def run_exp(exp: ModuleType, create_video: bool = False):
                 audio_path=effected_audio_path,
                 n_slices=exp.Conf.NUMBER_SLICES,
                 num_repetitions=exp.Conf.RATE_IMG_REPETITION,
+                fps=fps if fps else exp.Conf.FPS,
             )
 
         print("-"*42)
@@ -132,11 +124,16 @@ if __name__ == "__main__":
         action="store_true",
         help="Create a video or not"
     )
+    parser.add_argument(
+        "--fps",
+        type=int,
+        required=False,
+        help="Number of frames per second. A larger number generates a smoother video"
+    )
     args = parser.parse_args()
-    
     exp = load_module(args.exp)
 
     print(f"Executing exp_{args.exp}")
     print(exp.__doc__)
 
-    run_exp(exp=exp, create_video=args.video)
+    run_exp(exp=exp, create_video=args.video, fps=args.fps)

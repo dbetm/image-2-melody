@@ -32,6 +32,7 @@ class Conf:
     ]
     # VIDEO GENERATION
     RATE_IMG_REPETITION = 1
+    FPS = 1
 
 
 def rgb_to_octave(avg_rgb: int, octave_values: list) -> float:
