@@ -64,7 +64,7 @@ def run_exp(
 ):
     """This function runs a pipeline for the given experiment."""
     for img_filename in image_filenames:
-        img_name, file_extension = img_filename.split(".")
+        img_name, file_extension = img_filename.rsplit(".", 1)
 
         if file_extension not in IMAGE_FORMATS:
             continue

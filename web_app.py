@@ -34,7 +34,7 @@ def remove_tmp_files(filepaths: list):
 
 
 def resolve_exp(exp_id: int) -> tuple:
-    assert exp_id in ALLOWED_EXP_IDS, "Select an appropiate experiment id (3 or 5)"
+    assert exp_id in ALLOWED_EXP_IDS, f"Select an appropiate experiment id {ALLOWED_EXP_IDS}"
 
     exp_module = load_module(exp_id)
     exp_info = exp_module.__doc__
@@ -76,14 +76,14 @@ def run():
         st.write("Download your video:")
 
         now_str = datetime.now().strftime("%Y%m%d_%H%M")
-        filename = f"{now_str}_image_to_melody.mp4"
+        filename = f"image_to_melody_{now_str}.mp4"
 
         with open(video_filepath, "rb") as f:
             logger.info({"video": filename})
             st.download_button("Download", f, file_name=filename, on_click=reset)
 
         audio_filepath = video_filepath.replace(
-            "final_audio.mp4", image_filename.split(".")[0] + ".wav"
+            "final_audio.mp4", image_filename.rsplit(".", 1)[0] + ".wav"
         )
         remove_tmp_files([video_filepath, image_filepath, audio_filepath])
 
