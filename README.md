@@ -6,6 +6,11 @@ In each one, the image is divided in vertical slices where representative pixels
 
 The basic idea is that in the light the frequency determines the color (so it's captured in a photo) and in the sounds the frequency determines the tone/pitch.
 
+When running a experiment you can generate a video too, like [this - Northern Lights](https://youtu.be/fh1Ca0vpPEI) which is generated using the experiment #2 or [this - The Starry Night](https://youtu.be/2mMM9h8iYG4).
+
+
+## Setup
+
 When running a experiment you can generate a video too, like [this](https://youtu.be/fh1Ca0vpPEI) which is generated using the experiment #2.
 
 
@@ -25,7 +30,7 @@ When running a experiment you can generate a video too, like [this](https://yout
 
 **Install base dependencies**
 
-`pip install -r requirements.txt`
+`pip install -r requirements-base.txt`
 
 
 ## Experiments
@@ -40,11 +45,22 @@ When running a experiment you can generate a video too, like [this](https://yout
 
 ## Run an experiment
 
-**Install dependencies for a specific experiment**
+1) Install dependencies for a specific experiment.
 
 `invoke setup-experiment --exp {id}`
 
 Where `id` is the identifier of the experiment. 
+
+2) Paste your image or images inside of: [sample_images/](sample_images/)
+
+2) Then run the Python script, it will process each image:
+
+```python
+python3 run_exp.py --exp {id} --video
+```
+
+If you only want to generate the wav audio, then don't pass the `--video` flag.
+And find the results on outputs
 
 ---------------------
 

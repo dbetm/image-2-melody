@@ -1,4 +1,3 @@
-from functools import lru_cache
 from typing import Any, Callable, List
 
 import numpy as np
@@ -87,7 +86,6 @@ def improve_audio(audio_path: str, effects: List[Any]) -> str:
     return new_path
 
 
-@lru_cache(maxsize=10)
 def group_notes(notes: list) -> list:
     """Grant that notes are unique, then sort them in ascending order."""
     notes = list(set(notes))
