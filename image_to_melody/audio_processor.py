@@ -1,9 +1,11 @@
+from functools import lru_cache
 from typing import Any, Callable, List
 
 import numpy as np
 import pandas as pd
 from pedalboard import Pedalboard
 from pedalboard.io import AudioFile
+from midi2audio import FluidSynth
 
 
 # MUSICAL SCALES - FREQUENCIES
@@ -85,9 +87,18 @@ def improve_audio(audio_path: str, effects: List[Any]) -> str:
     return new_path
 
 
+@lru_cache(maxsize=10)
 def group_notes(notes: list) -> list:
     """Grant that notes are unique, then sort them in ascending order."""
     notes = list(set(notes))
     notes.sort()
 
     return notes
+
+
+def synthesize(
+    midi_file_path: str, output_path: str, sample_rate: int, sound_font_filepath: str
+) -> None:
+    """Synthesize the midi file and save it into the output path as an audio file."""
+    fs = FluidSynth(sound_font=sound_font_filepath, sample_rate=sample_rate)
+    fs.midi_to_audio(midi_file_path, output_path)

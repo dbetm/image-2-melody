@@ -5,9 +5,14 @@ Which is a public repo under GNU General Public License v3.0
 """
 import os
 import numpy as np
-import glob
 
-from music21 import corpus, converter
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
+"""
+0 = all messages are logged (default behavior)
+1 = INFO messages are not printed
+2 = INFO and WARNING messages are not printed
+3 = INFO, WARNING, and ERROR messages are not printed
+"""
 
 from keras.layers import LSTM, Input, Dense, Activation, Embedding, Concatenate, Reshape
 from keras.layers import RepeatVector, Permute
@@ -17,17 +22,6 @@ from keras.models import Model
 from keras.optimizers import RMSprop
 from keras.utils import np_utils
 
-
-def get_music_list(data_folder):
-    
-    if data_folder == 'chorales':
-        file_list = ['bwv' + str(x['bwv']) for x in corpus.chorales.ChoraleList().byBWV.values()]
-        parser = corpus
-    else:
-        file_list = glob.glob(os.path.join(data_folder, "*.mid"))
-        parser = converter
-    
-    return file_list, parser
 
 
 def create_network(
@@ -83,13 +77,6 @@ def get_distinct(elements):
     return (element_names, n_elements)
 
 
-def create_lookups(element_names):
-    # create dictionary to map notes and durations to integers
-    element_to_int = dict((element, number) for number, element in enumerate(element_names))
-    int_to_element = dict((number, element) for number, element in enumerate(element_names))
-
-    return (element_to_int, int_to_element)
-
 
 def prepare_sequences(notes, durations, lookups, distincts, seq_len =32):
     """ Prepare the sequences used to train the Neural Network """
@@ -133,6 +120,7 @@ def sample_with_temp(preds, temperature):
     if temperature == 0:
         return np.argmax(preds)
     else:
+        np.random.seed(0)
         preds = np.log(preds) / temperature
         exp_preds = np.exp(preds)
         preds = exp_preds / np.sum(exp_preds)
