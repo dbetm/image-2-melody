@@ -1,4 +1,6 @@
 """The image is read in RGB and HSV color spaces. In the RGB color space, representative pixels are extracted to select notes from chords. In the HSV color space, the H value is averaged from a 15% sample of pixels to select a group of MIDI instruments that are mapped to a color-emotion."""
+from os import getenv
+
 import cv2
 import numpy as np
 import pandas as pd
@@ -123,7 +125,10 @@ def image_to_melody(image: np.ndarray):
         all_representative_pixels, columns=["red", "green", "blue"]
     )
     instrument_group = select_instrument_group(hsv_img)
-    print(instrument_group["description"])
+
+    if not getenv("PROD", None):
+        print(instrument_group["description"])
+
     instruments = instrument_group["instruments"]
 
     # Generate melody

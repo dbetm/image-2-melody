@@ -3,6 +3,7 @@ import importlib
 import os
 import shutil
 from types import ModuleType
+from typing import List
 
 import cv2
 import numpy as np
@@ -26,7 +27,7 @@ def create_and_save_video(
     n_slices: int,
     num_repetitions: int,
     fps: int,
-) -> None:
+) -> str:
     """Create dir to save the video, generate frames and then save the video with
     audio in the `base_output_path` given."""
     tmp_video_path = os.path.join(base_output_path, "final.mp4")
@@ -46,6 +47,8 @@ def create_and_save_video(
 
     print(f"Video saved at: {video_filepath}")
 
+    return video_filepath
+
 
 def load_module(id: int) -> ModuleType:
     return importlib.import_module(
@@ -53,13 +56,14 @@ def load_module(id: int) -> ModuleType:
     )
 
 
-def run_exp(exp: ModuleType, create_video: bool = False, fps: int = None):
+def run_exp(
+    exp: ModuleType,
+    image_filenames: List[str],
+    create_video: bool = False,
+    fps: int = None,
+):
     """This function runs a pipeline for the given experiment."""
-    images_filenames = os.listdir(path=IMAGES_PATH)
-    images_filenames.sort()
-    images_filenames = ["001_hubble_deep_space.jpg"]
-
-    for img_filename in images_filenames:
+    for img_filename in image_filenames:
         img_name, file_extension = img_filename.split(".")
 
         if file_extension not in IMAGE_FORMATS:
@@ -102,7 +106,7 @@ def run_exp(exp: ModuleType, create_video: bool = False, fps: int = None):
         )
 
         if create_video:
-            create_and_save_video(
+            return create_and_save_video(
                 img=resized_img,
                 base_output_path=base_output_path,
                 audio_path=effected_audio_path,
@@ -136,4 +140,13 @@ if __name__ == "__main__":
     print(f"Executing exp_{args.exp}")
     print(exp.__doc__)
 
-    run_exp(exp=exp, create_video=args.video, fps=args.fps)
+    images_filenames = os.listdir(path=IMAGES_PATH)
+    images_filenames.sort()
+    images_filenames = ["001_hubble_deep_space.jpg"]
+
+    run_exp(
+        exp=exp,
+        image_filenames=images_filenames,
+        create_video=args.video,
+        fps=args.fps
+    )
