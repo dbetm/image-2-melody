@@ -2,11 +2,11 @@
 import cv2
 import numpy as np
 import pandas as pd
-from midi2audio import FluidSynth
 from mido import Message, MidiFile, MidiTrack, MetaMessage
 
 
 from experiments.exp_2.instrument_groups import *
+from image_to_melody.audio_processor import synthesize
 from image_to_melody.connections import download_sound_font
 from image_to_melody.img_utils import (
     get_pixel_median_values, get_representative_pixels
@@ -111,14 +111,6 @@ def get_pixel_rgb_value(row: dict, instrument: Instrument) -> int:
     return row[instrument.color_channel]
 
 
-def synthesize(midi_file_path: str, output_path: str, sample_rate: int):
-    """Synthesize the midi file and save it into the output path as an audio file."""
-    download_sound_font(Conf.SOUND_FONT_FILEPATH)
-
-    fs = FluidSynth(sound_font=Conf.SOUND_FONT_FILEPATH, sample_rate=sample_rate)
-    fs.midi_to_audio(midi_file_path, output_path)
-
-
 def image_to_melody(image: np.ndarray):
     rgb_img = cv2.cvtColor(src=image, code=cv2.COLOR_BGR2RGB)
     hsv_img = cv2.cvtColor(src=image, code=cv2.COLOR_BGR2HSV)
@@ -136,12 +128,11 @@ def image_to_melody(image: np.ndarray):
 
     # Generate melody
     mid = MidiFile()
-    #tracks = list()
+
     for idx, instrument in enumerate(instruments):
         track = Track(
             instrument=instrument, channel=idx, note_duration=Conf.NOTE_DURATION
         )
-        #tracks.append(track)
         mid.tracks.append(track)
 
     for idx, row in df_repixels.iterrows():
@@ -156,10 +147,13 @@ def image_to_melody(image: np.ndarray):
 
     # Synthesize melody
     mid.save(Conf.TEMP_MIDI_FILEPATH)
+
+    download_sound_font(Conf.SOUND_FONT_FILEPATH)
     synthesize(
         midi_file_path=Conf.TEMP_MIDI_FILEPATH,
         output_path=Conf.TEMP_AUDIO_FILEPATH,
         sample_rate=Conf.SAMPLE_RATE,
+        sound_font_filepath=Conf.SOUND_FONT_FILEPATH,
     )
 
     return Conf.TEMP_AUDIO_FILEPATH

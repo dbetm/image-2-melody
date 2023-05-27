@@ -6,6 +6,9 @@ import numpy as np
 from sklearn.cluster import KMeans
 
 
+HUE_MAX_VAL = 180
+
+
 def get_pixel_average_values(
     img: np.ndarray, sample_percent: float = 0.15, seed: int = 42
 ) -> Tuple[int, int, int]:
