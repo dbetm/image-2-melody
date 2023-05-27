@@ -142,7 +142,7 @@ if __name__ == "__main__":
 
     images_filenames = os.listdir(path=IMAGES_PATH)
     images_filenames.sort()
-    images_filenames = ["001_hubble_deep_space.jpg"]
+    #images_filenames = ["001_hubble_deep_space.jpg"]
 
     run_exp(
         exp=exp,

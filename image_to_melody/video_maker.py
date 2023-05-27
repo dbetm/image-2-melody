@@ -22,7 +22,7 @@ def generate_fotograms(img: np.ndarray, n_slices: int, fps: int = 1):
     slice_width = width // n_slices
     percent_border_of_slice_width = 0.06 # 6%
     border_width = int(max(1, slice_width * percent_border_of_slice_width))
-    border_width = min(border_width, 6)
+    border_width = min(border_width, 4)
 
     step = slice_width / fps
     step = slice_width if step < 1 else step
