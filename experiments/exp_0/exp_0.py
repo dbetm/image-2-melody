@@ -8,7 +8,13 @@ import numpy as np
 import pandas as pd
 from pedalboard import Compressor, HighpassFilter
 
-from image_to_melody.audio_processor import *
+from image_to_melody.audio_processor import (
+    A_NATURAL_MINOR,
+    A_HARMONIC_MINOR,
+    A_MAJOR,
+    A_HARMONIC_MAJOR,
+    build_playable_audio,
+)
 from image_to_melody.img_utils import (
     get_representative_pixels,
     get_pixel_average_values,
@@ -86,22 +92,19 @@ def image_to_melody(
     else:
         scale_freq = A_HARMONIC_MAJOR
         print("A harmonic major")
-    
+
     # Compute frequency of notes
     df_repixels["notes"] = df_repixels.apply(
-        lambda row : map_value_to_dest(row["hue"], 180, scale_freq), axis=1
+        lambda row : map_value_to_dest(row["hue"], 180, scale_freq),
+        axis=1
     )
 
     # Compute octaves
     octave_values = [0.5, 1, 2]
     df_repixels["octave"] = df_repixels.apply(
-        lambda row : map_value_to_dest(row["saturation"], 255, octave_values), axis=1
+        lambda row : map_value_to_dest(row["saturation"], 255, octave_values),
+        axis=1
     )
-
-    # print stats
-    print("-"*24)
-    print(df_repixels.describe())
-    print("-"*24)
 
     return build_playable_audio(
         df_repixels,

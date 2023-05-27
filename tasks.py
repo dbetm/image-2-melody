@@ -1,9 +1,5 @@
 from invoke import task
 
-"""Run, for example:
-
-$ invoke run-unit-tests
-"""
 
 @task
 def tests(c):
