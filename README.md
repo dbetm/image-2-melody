@@ -6,7 +6,7 @@ In each one, the image is divided in vertical slices where representative pixels
 
 The basic idea is that in the light the frequency determines the color (so it's captured in a photo) and in the sounds the frequency determines the tone/pitch.
 
-When running a experiment you can generate a video too, like [this - Northern Lights](https://youtu.be/fh1Ca0vpPEI) which is generated using the experiment #2 or [this - The Starry Night](https://youtu.be/2mMM9h8iYG4).
+When running a experiment you can generate a video too, like [this - Northern Lights](https://youtu.be/fh1Ca0vpPEI) which is generated using the experiment #2 or [this - The Starry Night](https://youtu.be/2mMM9h8iYG4) generated using a trained neural network.
 
 
 ## Setup
