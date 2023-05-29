@@ -6,14 +6,9 @@ In each one, the image is divided in vertical slices where representative pixels
 
 The basic idea is that in the light the frequency determines the color (so it's captured in a photo) and in the sounds the frequency determines the tone/pitch.
 
-When running a experiment you can generate a video too, like [this - Northern Lights](https://youtu.be/fh1Ca0vpPEI) which is generated using the experiment #2 or [this - The Starry Night](https://youtu.be/2mMM9h8iYG4) generated using a trained neural network.
+When running a experiment you can generate a video too, like [this - Northern Lights](https://youtu.be/fh1Ca0vpPEI) which is generated using the experiment #2 or [this - The Starry Night](https://youtu.be/2mMM9h8iYG4) generated using a trained neural network (experiment #3).
 
 Alternatively, you can use the web [Streamlit app](https://dbetm-image-2-melody-web-app-eydksr.streamlit.app/).
-
-
-## Setup
-
-When running a experiment you can generate a video too, like [this](https://youtu.be/fh1Ca0vpPEI) which is generated using the experiment #2.
 
 
 ## Setup
@@ -52,6 +47,8 @@ When running a experiment you can generate a video too, like [this](https://yout
 `invoke setup-experiment --exp {id}`
 
 Where `id` is the identifier of the experiment. 
+
+**Important note:** If you wanna run the experiment 2 or 3, you need to install `fluidsynth` too at the OS level which helps us to synthesize the audios from MIDI notes, in Linux Ubuntu you can install with: `apt-get install fluidsynth`
 
 2) Paste your image or images inside of: [sample_images/](sample_images/)
 
