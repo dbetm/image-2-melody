@@ -116,8 +116,6 @@ def run_exp(
                 fps=fps if fps else exp.Conf.FPS,
             )
 
-        print("-"*42)
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -143,7 +141,7 @@ if __name__ == "__main__":
 
     images_filenames = os.listdir(path=IMAGES_PATH)
     images_filenames.sort()
-    images_filenames = ["010_galaxy.jpg"]
+    # images_filenames = ["010_galaxy.jpg"]
 
     run_exp(
         exp=exp,
