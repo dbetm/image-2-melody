@@ -1,7 +1,7 @@
 """In this experiment the frequency will be selected from groups of frequencies which
 are known as musical scales. The HSV values are extracted from the image.
 """
-from typing import Callable, Union
+from typing import Callable
 
 import cv2
 import numpy as np
@@ -19,6 +19,7 @@ from image_to_melody.img_utils import (
     get_representative_pixels,
     get_pixel_average_values,
 )
+from image_to_melody.utils import map_value_to_dest
 
 
 class Conf:
@@ -39,25 +40,6 @@ class Conf:
     FPS = 1
 
 
-def map_value_to_dest(
-    val_: Union[int, float], max_threshold: int, dest_vals: list
-) -> Union[int, float]:
-    # generate equidistant thresholds
-    thresholds = [
-        threshold
-        for threshold in 
-        range(0, max_threshold, max_threshold // len(dest_vals))
-    ]
-    dest_value = dest_vals[-1]
-
-    for i in range(1, len(thresholds)):
-        if val_ < thresholds[i]:
-            dest_value = dest_vals[i-1]
-            break
-
-    return dest_value
-
-
 def image_to_melody(
     image: np.ndarray, gen_wave_fn: Callable = np.sin
 ):
@@ -72,8 +54,6 @@ def image_to_melody(
     df_repixels = pd.DataFrame(
         all_representative_pixels, columns=["hue", "saturation", "value"]
     )
-
-    print(f"Number of representative pixels: {df_repixels.shape[0]}")
 
     avg_r, avg_g, avg_b = get_pixel_average_values(rgb_img)
 
@@ -95,14 +75,14 @@ def image_to_melody(
 
     # Compute frequency of notes
     df_repixels["notes"] = df_repixels.apply(
-        lambda row : map_value_to_dest(row["hue"], 180, scale_freq),
+        lambda row : map_value_to_dest(row["hue"], scale_freq, max_value=180),
         axis=1
     )
 
     # Compute octaves
     octave_values = [0.5, 1, 2]
     df_repixels["octave"] = df_repixels.apply(
-        lambda row : map_value_to_dest(row["saturation"], 255, octave_values),
+        lambda row : map_value_to_dest(row["saturation"], octave_values, max_value=255),
         axis=1
     )
 

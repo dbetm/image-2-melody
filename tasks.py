@@ -3,6 +3,12 @@ from invoke import task
 
 @task
 def tests(c):
+    """Run tests
+    
+    -s to displat the standard output during test execution
+    -l to show locals variables values in tracebacks
+    -v verbose 
+    """
     c.run("python3 -b -m pytest -s -l -v --rootdir=tests/")
 
 

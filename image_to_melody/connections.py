@@ -21,7 +21,7 @@ def download_sound_font(dest_local_filepath: str):
     if response.status_code == HTTPStatus.OK:
         with open(dest_local_filepath, "wb") as f:
             f.write(response.content)
-            print(f"Successfully downloaded sound fond file at: {dest_local_filepath}")
+            print(f"Successfully downloaded sound font file at: {dest_local_filepath}")
     else:
         raise Exception(
             "Error trying to download the sound font file. Which is required to"

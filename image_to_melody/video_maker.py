@@ -22,7 +22,7 @@ def generate_fotograms(img: np.ndarray, n_slices: int, fps: int = 1):
     slice_width = width // n_slices
     percent_border_of_slice_width = 0.06 # 6%
     border_width = int(max(1, slice_width * percent_border_of_slice_width))
-    border_width = min(border_width, 4)
+    border_width = min(border_width, 3)
 
     step = slice_width / fps
     step = slice_width if step < 1 else step
@@ -51,9 +51,6 @@ def generate_fotograms(img: np.ndarray, n_slices: int, fps: int = 1):
         fotogram_count += 1
         yield tmp_img
 
-
-def to_numeric(a: str):
-    return int(a.split("/")[-1].split(".")[0])
 
 
 def create_video(
