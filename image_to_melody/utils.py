@@ -9,10 +9,12 @@ def map_value_to_dest(
     max_value: Optional[Union[int, float]] = None,
     thresholds: Optional[List[Union[int, float]]] = None,
 ) -> Any:
-    """Given a value, a destination values list, and an upper bound inclusive for that value or the list of thresholds, then perform a linear map."""
+    """Given a value, a destination values list, and an upper bound inclusive for that 
+    value or the list of thresholds, then perform a linear map."""
 
     if max_value:
-        thresholds = np.linspace(start=0, stop=max_value, num=len(dest_vals))
+        step = max_value / len(dest_vals)
+        thresholds = np.linspace(start=step, stop=max_value, num=len(dest_vals))
 
     dest_value = dest_vals[-1]
 

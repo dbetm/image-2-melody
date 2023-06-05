@@ -4,6 +4,7 @@
 import ast
 import os
 import pickle as pkl
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 from functools import lru_cache
@@ -32,8 +33,8 @@ class Conf:
     # MELODY GENERATION
     SAMPLE_RATE = 44100 # 44.1 KHz - standard used in most CDs and digital audio format
     # AUDIO POST-PROCESSING
-    TEMP_MIDI_FILEPATH = "experiments/tmp/melody.mid"
-    TEMP_AUDIO_FILEPATH = "experiments/tmp/melody.wav"
+    TEMP_MIDI_FILEPATH = "experiments/tmp/melody_{date_}.mid"
+    TEMP_AUDIO_FILEPATH = "experiments/tmp/melody_{date_}.wav"
     SOUND_EFFECTS = [] # Pedalboard effects
     SOUND_FONT_FILEPATH = "experiments/tmp/sound_font.sf2"
     # VIDEO GENERATION
@@ -191,7 +192,8 @@ def image_to_melody(image: np.ndarray):
     )
 
     # Generate notes using Hue pixel's value
-    thresholds = np.linspace(start=0, stop=HUE_MAX_VAL, num=len(single_notes_set))
+    step = HUE_MAX_VAL / len(single_notes_set)
+    thresholds = np.linspace(start=step, stop=HUE_MAX_VAL, num=len(single_notes_set))
 
     df_repixels["notes"] = df_repixels.apply(
         lambda row : map_value_to_dest(row["hue"], single_notes_set, thresholds=thresholds), axis=1,
@@ -227,17 +229,26 @@ def image_to_melody(image: np.ndarray):
     )
 
     # Generate audio
+    date_ = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+    midi_path = Conf.TEMP_MIDI_FILEPATH.format(date_=date_)
     generate_midi_file(
         notes_and_durations_output,
-        output_path=Conf.TEMP_MIDI_FILEPATH,
+        output_path=midi_path,
     )
 
     download_sound_font(Conf.SOUND_FONT_FILEPATH)
+    audio_output_path = Conf.TEMP_AUDIO_FILEPATH.format(date_=date_)
     synthesize(
-        midi_file_path=Conf.TEMP_MIDI_FILEPATH,
-        output_path=Conf.TEMP_AUDIO_FILEPATH,
+        midi_file_path=midi_path,
+        output_path=audio_output_path,
         sample_rate=Conf.SAMPLE_RATE,
         sound_font_filepath=Conf.SOUND_FONT_FILEPATH,
     )
 
-    return Conf.TEMP_AUDIO_FILEPATH
+    try:
+        os.remove(midi_path)
+    except:
+        print("Warning. MIDI file wasn't deleted")
+
+    return audio_output_path

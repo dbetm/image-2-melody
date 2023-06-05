@@ -98,6 +98,7 @@ def run_exp(
             )
         else: # audio is the path of the saved file
             shutil.copyfile(src=audio, dst=audio_output_path)
+            os.remove(audio)
 
         # improve audio
         effected_audio_path = audio_processor.improve_audio(
@@ -142,7 +143,7 @@ if __name__ == "__main__":
 
     images_filenames = os.listdir(path=IMAGES_PATH)
     images_filenames.sort()
-    #images_filenames = ["001_hubble_deep_space.jpg"]
+    images_filenames = ["010_galaxy.jpg"]
 
     run_exp(
         exp=exp,

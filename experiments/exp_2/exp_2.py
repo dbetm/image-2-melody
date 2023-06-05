@@ -1,5 +1,6 @@
 """The image is read in RGB and HSV color spaces. In the RGB color space, representative pixels are extracted to select notes from chords. In the HSV color space, the median H value is selected from a 15% sample of pixels to select a group of MIDI instruments that are mapped to a color-emotion."""
-from os import getenv
+from datetime import datetime
+from os import getenv, remove
 
 import cv2
 import numpy as np
@@ -25,8 +26,8 @@ class Conf:
     SAMPLE_RATE = 44100 # 44.1 KHz - standard used in most CDs and digital audio format
     NOTE_DURATION = 500
     # AUDIO POST-PROCESSING
-    TEMP_MIDI_FILEPATH = "experiments/tmp/melody.mid"
-    TEMP_AUDIO_FILEPATH = "experiments/tmp/melody.wav"
+    TEMP_MIDI_FILEPATH = "experiments/tmp/melody_{date_}.mid"
+    TEMP_AUDIO_FILEPATH = "experiments/tmp/melody_{date_}.wav"
     SOUND_EFFECTS = [] # Pedalboard effects
     SOUND_FONT_FILEPATH = "experiments/tmp/sound_font.sf2"
     # VIDEO GENERATION
@@ -151,14 +152,24 @@ def image_to_melody(image: np.ndarray):
         track.finish()
 
     # Synthesize melody
-    mid.save(Conf.TEMP_MIDI_FILEPATH)
+    date_ = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+    midi_path = Conf.TEMP_MIDI_FILEPATH.format(date_=date_)
+    mid.save(midi_path)
 
     download_sound_font(Conf.SOUND_FONT_FILEPATH)
+    audio_output_path = Conf.TEMP_AUDIO_FILEPATH.format(date_=date_)
+
     synthesize(
-        midi_file_path=Conf.TEMP_MIDI_FILEPATH,
-        output_path=Conf.TEMP_AUDIO_FILEPATH,
+        midi_file_path=midi_path,
+        output_path=audio_output_path,
         sample_rate=Conf.SAMPLE_RATE,
         sound_font_filepath=Conf.SOUND_FONT_FILEPATH,
     )
 
-    return Conf.TEMP_AUDIO_FILEPATH
+    try:
+        remove(midi_path)
+    except:
+        print("Warning. MIDI file wasn't deleted")
+
+    return audio_output_path

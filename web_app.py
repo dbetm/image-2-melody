@@ -44,7 +44,7 @@ def resolve_exp(exp_id: int) -> tuple:
 
 def run():
     st.title("Image to Melody")
-    st.write("Upload an image and we'll convert it into a short musical video.")
+    st.write("Upload an image and we'll convert it into a short musical video. June 4th version.")
 
     selected_exp_id = st.selectbox(
         "Choose an experiment", ALLOWED_EXP_IDS, on_change=reset
