@@ -8,7 +8,7 @@ The basic idea is that in the light the frequency determines the color (so it's 
 
 When running a experiment you can generate a video too, like [this - Northern Lights](https://youtu.be/fh1Ca0vpPEI) which is generated using the experiment #2 or [this - The Starry Night](https://youtu.be/2mMM9h8iYG4) generated using a trained neural network (experiment #3).
 
-Alternatively, you can use the web [Streamlit app](https://dbetm-image-2-melody-web-app-eydksr.streamlit.app/).
+Alternatively, you can use the web [Streamlit app](https://dbetm-image-2-melody-web-app-k824c5.streamlit.app/).
 
 
 ## Setup
