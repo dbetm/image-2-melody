@@ -11,7 +11,7 @@ logger.basicConfig(level=logger.INFO)
 
 IMAGE_KEY = "image"
 EXP_ID_KEY = "expID"
-ALLOWED_EXP_IDS = [2, 3]
+ALLOWED_EXP_IDS = [3, 2]
 
 
 def save(uploaded_file, path: str):
